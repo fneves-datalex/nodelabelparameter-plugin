@@ -4,17 +4,11 @@
 package org.jvnet.jenkins.plugins.nodelabelparameter;
 
 import hudson.Extension;
-import hudson.model.ParameterValue;
-import hudson.model.SimpleParameterDefinition;
-import hudson.model.ComputerSet;
-import hudson.model.Hudson;
-import hudson.model.ParameterDefinition;
+import hudson.model.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
+import jenkins.model.Jenkins;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -169,6 +163,12 @@ public class NodeParameterDefinition extends SimpleParameterDefinition {
 		if (!test.contains("master")) {
 			test.add(0, "master");
 		}
+
+        //Adding our custom nodes - which means we are adding all the names of the jobs with a special mark
+        for( String jobName : Jenkins.getInstance().getJobNames()) {
+            test.add(String.format("%s - Node", jobName));
+        }
+
 		return test;
 	}
 	
@@ -208,7 +208,12 @@ public class NodeParameterDefinition extends SimpleParameterDefinition {
 
 		List<String> nodes = new ArrayList<String>();
 		if (joValue instanceof String) {
-			nodes.add((String) joValue);
+            String labelValue = (String) joValue;
+            if(shouldLookForParentNode(labelValue)) {
+                labelValue = getJobLastRunNode(labelValue);
+            }
+			nodes.add(labelValue);
+
 		} else if (joValue instanceof JSONArray) {
 			JSONArray ja = (JSONArray) joValue;
 			for (Object strObj : ja) {
@@ -220,6 +225,33 @@ public class NodeParameterDefinition extends SimpleParameterDefinition {
 		value.setDescription(getDescription());
 		return value;
 	}
+
+    /**
+     * TODO by baris
+     * @param labelValue
+     * @return
+     */
+    private String getJobLastRunNode(String labelValue) {
+        String jobName = labelValue.split("-")[0].trim();
+        Collection<? extends Job> jobs = Jenkins.getInstance().getItem(jobName).getAllJobs();
+        for(Job job : jobs) {
+            String nodeName = ((FreeStyleProject) job).getLastStableBuild().getBuiltOn().getNodeName() ;
+            return nodeName.equals("")  ? "master" : nodeName;
+        }
+        return labelValue;
+    }
+
+    /**
+     * <p>This method will check if the label that has come from the UI is related to another job.
+     *    If it is, we have to get the real Job Name
+     * </p>
+     *
+     * @param labelValue The label value that comes from the UI
+     * @return true if labelValue ends with ' - Node', else false
+     */
+    public boolean shouldLookForParentNode(String labelValue) {
+        return labelValue.indexOf(" - Node") > -1;
+    }
 
 	/**
 	 * @return the allowMultiNodeSelection
