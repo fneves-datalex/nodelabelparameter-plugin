@@ -214,6 +214,7 @@ public class NodeParameterDefinition extends SimpleParameterDefinition {
             }
 			nodes.add(labelValue);
 
+
 		} else if (joValue instanceof JSONArray) {
 			JSONArray ja = (JSONArray) joValue;
 			for (Object strObj : ja) {
