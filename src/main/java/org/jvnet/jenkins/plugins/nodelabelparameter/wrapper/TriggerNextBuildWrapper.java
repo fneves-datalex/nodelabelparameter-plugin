@@ -60,7 +60,7 @@ public class TriggerNextBuildWrapper extends BuildWrapper {
 		}
 
 		if (build.getProject().isConcurrentBuild() && !nodeParameterDefinition.isTriggerConcurrentBuilds()) {
-			final String msg = Messages.BuildWrapper_param_not_concurrent(nodeParameterDefinition.getName());
+            final String msg = Messages.BuildWrapper_param_not_concurrent(nodeParameterDefinition.getName());
 			LOGGER.severe(msg);
 			throw new IllegalStateException(msg);
 		} else if (!build.getProject().isConcurrentBuild() && nodeParameterDefinition.isTriggerConcurrentBuilds()) {

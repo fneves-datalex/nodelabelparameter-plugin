@@ -1,14 +1,13 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.jenkins-ci.plugins</groupId>
-        <artifactId>plugin</artifactId>
-        <version>1.498</version>
-    </parent>
+	<parent>
+		<groupId>org.jenkins-ci.plugins</groupId>
+		<artifactId>plugin</artifactId>
+		<version>1.466</version>
+	</parent>
 
 	<artifactId>nodelabelparameter</artifactId>
 	<version>1.4.1-SNAPSHOT</version>
@@ -28,10 +27,17 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<developers>
+        <!-- original author of the plugin -->
 		<developer>
 			<id>imod</id>
 			<name>Dominik Bartholdi</name>
 			<email />
+		</developer>
+
+		<developer>
+			<id>fneves-datalex</id>
+			<name>Fabio Neves</name>
+			<email>fabio.neves@datalex.com</email>
 		</developer>
 	</developers>
 	<build>
@@ -45,7 +51,7 @@
 				<plugin>
 					<groupId>org.kohsuke</groupId>
 					<artifactId>access-modifier-checker</artifactId>
-					<version>1.3</version>
+					<version>1.4</version>
 				</plugin>
 				<plugin>
 					<groupId>org.jvnet.localizer</groupId>
@@ -159,4 +165,6 @@
 			<url>http://repo.jenkins-ci.org/public/</url>
 		</pluginRepository>
 	</pluginRepositories>
-</project>
+</project>  
+  
+

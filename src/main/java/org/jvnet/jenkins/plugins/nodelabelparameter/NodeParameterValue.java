@@ -73,7 +73,7 @@ public class NodeParameterValue extends LabelParameterValue {
 		if(getLabel() == null || getLabel().length() == 0){
 		    // these artificial labels will cause the job to stay in the queue and the user will see this label
 		    if (ignoreOfflineNodes) {
-		        setLabel("Job triggered without a valid online node, given where: "+StringUtils.join(labels, ','));
+		        setLabel("Job triggered without a valid online node, given where: "+ StringUtils.join(labels, ','));
 		    } else {
 		        setLabel("Job triggered, but no node given");
 		    }

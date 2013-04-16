@@ -164,8 +164,8 @@ public class NodeParameterDefinition extends SimpleParameterDefinition {
 			test.add(0, "master");
 		}
 
-        //Adding our custom nodes - which means we are adding all the names of the jobs with a special mark
-        for( String jobName : Jenkins.getInstance().getJobNames()) {
+        //TODO but better
+        for(String jobName : Jenkins.getInstance().getJobNames()) {
             test.add(String.format("%s - Node", jobName));
         }
 
@@ -206,15 +206,15 @@ public class NodeParameterDefinition extends SimpleParameterDefinition {
 		final String name = jo.getString("name");
 		final Object joValue = jo.get("value") == null ? jo.get("labels") : jo.get("value");
 
+
 		List<String> nodes = new ArrayList<String>();
 		if (joValue instanceof String) {
-            String labelValue = (String) joValue;
-            if(shouldLookForParentNode(labelValue)) {
-                labelValue = getJobLastRunNode(labelValue);
+            String value = (String) joValue;
+            if(shouldLookForJobNode(value)) {
+                value = getParentLastRunNode(value);
             }
-			nodes.add(labelValue);
 
-
+			nodes.add(value);
 		} else if (joValue instanceof JSONArray) {
 			JSONArray ja = (JSONArray) joValue;
 			for (Object strObj : ja) {
@@ -222,36 +222,20 @@ public class NodeParameterDefinition extends SimpleParameterDefinition {
 			}
 		}
 
+
 		NodeParameterValue value = new NodeParameterValue(name, nodes, isIgnoreOfflineNodes());
 		value.setDescription(getDescription());
 		return value;
 	}
 
-    /**
-     * TODO by baris
-     * @param labelValue
-     * @return
-     */
-    private String getJobLastRunNode(String labelValue) {
+    private String getParentLastRunNode(String labelValue) {
         String jobName = labelValue.split("-")[0].trim();
         Collection<? extends Job> jobs = Jenkins.getInstance().getItem(jobName).getAllJobs();
-        for(Job job : jobs) {
-            String nodeName = ((FreeStyleProject) job).getLastStableBuild().getBuiltOn().getNodeName() ;
-            return nodeName.equals("")  ? "master" : nodeName;
-        }
         return labelValue;
     }
 
-    /**
-     * <p>This method will check if the label that has come from the UI is related to another job.
-     *    If it is, we have to get the real Job Name
-     * </p>
-     *
-     * @param labelValue The label value that comes from the UI
-     * @return true if labelValue ends with ' - Node', else false
-     */
-    public boolean shouldLookForParentNode(String labelValue) {
-        return labelValue.indexOf(" - Node") > -1;
+    private boolean shouldLookForJobNode(String labelName) {
+        return labelName.indexOf(" - Node") != -1;
     }
 
 	/**
